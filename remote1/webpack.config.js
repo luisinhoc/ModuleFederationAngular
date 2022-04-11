@@ -26,15 +26,10 @@ module.exports = {
       // For remotes (please adjust)
       name: "mfe2",
       filename: "remoteEntry.js",
+      // Module that will be exposed
       exposes: {
         "./Module1": "./src/app/microfrontend1/microfrontend1.module.ts",
       },
-
-      // For hosts (please adjust)
-      // remotes: {
-      //     "mfe1": "mfe1@http://localhost:3000/remoteEntry.js",
-
-      // },
 
       shared: share({
         "@angular/core": {
