@@ -36,6 +36,7 @@ module.exports = {
         mfe2: "mfe2@http://localhost:7000/remoteEntry.js",
       },
 
+      // Services that will be instaciated once
       shared: share({
         "@angular/core": {
           singleton: true,

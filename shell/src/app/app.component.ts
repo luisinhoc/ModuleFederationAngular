@@ -13,13 +13,13 @@ export class AppComponent implements OnInit {
   title = 'shell';
   constructor(private router: Router) {}
   async ngOnInit(): Promise<void> {
-    const dynamicRoutes = await this.getroute();
+    const dynamicRoutes = await this.getroutes();
     this.router.config.push(...dynamicRoutes);
     this.router.resetConfig(this.router.config);
-    console.log(this.router.config);
   }
 
-  public getroute(): Promise<any> {
+  // trying to do something like a http request
+  public getroutes(): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       const modules: ModuleInterface[] = [
         {
@@ -45,24 +45,31 @@ export class AppComponent implements OnInit {
   }
 
   public constructModule(modules: ModuleInterface[]) {
-    let obj: ModuleImplementationInterface[] = [];
+    let routes: ModuleImplementationInterface[] = [];
 
-    obj = modules.map((module) => {
-      const newObj: ModuleImplementationInterface = {
+    routes = modules.map((module) => {
+      const newRoutes: ModuleImplementationInterface = {
         path: module.path,
         loadChildren: () =>
           loadRemoteModule({
             remoteEntry: module.remoteEntry,
             remoteName: module.remoteName,
             exposedModule: module.exposedModule,
-          }).then((m) => {
-            return m[module.moduleName];
-          }),
+          })
+            .then((m) => {
+              return m[module.moduleName];
+            })
+            .catch((e) => {
+              // if module does not exists or the remote server is down
+              return import('./modulenotfound/modulenotfound.module').then(
+                (h) => h.ModulenotfoundModule
+              );
+            }),
       };
 
-      return newObj;
+      return newRoutes;
     });
 
-    return obj;
+    return routes;
   }
 }
